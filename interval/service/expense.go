@@ -21,6 +21,10 @@ func NewExpenseService(repository repository.Repository) ExpenseService {
 		repository: repository}
 }
 
+func (e *expenseService) GetAll() ([]models.Expense, error) {
+	return e.repository.GetAll()
+}
+
 func (e *expenseService) Add(details string, amount float64) (*models.Expense, error) {
 	expense := models.NewExpense(details, amount)
 
@@ -30,10 +34,6 @@ func (e *expenseService) Add(details string, amount float64) (*models.Expense, e
 		return nil, err
 	}
 	return expense, nil
-}
-
-func (e *expenseService) GetAll() ([]models.Expense, error) {
-	return e.repository.GetAll()
 }
 
 func (e *expenseService) Delete(id int) (*models.Expense, error) {
