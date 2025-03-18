@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/robertd2000/expense-tracker/interval/models"
 	"github.com/robertd2000/expense-tracker/interval/utils"
 )
@@ -8,10 +10,13 @@ import (
 type Repository interface {
 	Save(expense models.Expense) (models.Expense, error)
 	GetAll() ([]models.Expense, error)
+	GetLastID() (int, error)
 }
 
 type repository struct {
 	sourceFile string
+	tasks      []models.Expense
+	lastID     int
 }
 
 func NewRepository() Repository {
@@ -19,6 +24,13 @@ func NewRepository() Repository {
 }
 
 func (r *repository) Save(expense models.Expense) (models.Expense, error) {
+	id, err := r.GetLastID()
+
+	if err != nil {
+		return models.Expense{}, err
+	}
+
+	expense.ID = id + 1
 	return expense, nil
 }
 
@@ -56,4 +68,21 @@ func (r *repository) GetLastID() (int, error) {
 	}
 
 	return expenseData.LastID, nil
+}
+
+func (r *repository) commit() error {
+	db := models.ExpenseDB{
+		Expenses: r.tasks,
+		LastID:   r.lastID,
+	} 
+	s, err := utils.SerializeToJSON(db)
+	if err != nil {
+		return fmt.Errorf("unable to serialize task: %w", err)
+	}
+
+	if err := utils.SaveToJSON(r.sourceFile, s); err != nil {
+		return fmt.Errorf("unable to save to JSON: %w", err)
+	}
+
+	return nil
 }
