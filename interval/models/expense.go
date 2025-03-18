@@ -8,3 +8,7 @@ type Expense struct {
 	Amount  float64 `json:"amount"`
 	Date    time.Time  `json:"date"`
 }
+
+func NewExpense() *Expense {
+	return &Expense{}
+}
