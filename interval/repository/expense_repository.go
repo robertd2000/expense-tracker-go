@@ -19,8 +19,26 @@ type repository struct {
 	lastID     int
 }
 
-func NewRepository() Repository {
-	return &repository{}
+func NewRepository(sourceFile string) Repository {
+	repo := &repository{
+		sourceFile: sourceFile,
+	}
+
+	repo.Init()
+
+	return repo
+}
+
+func (r *repository) Init() {
+	data, err := r.getData()
+
+	if err != nil {
+		return
+	}
+
+	r.tasks = data.Expenses
+	r.lastID = data.LastID
+
 }
 
 func (r *repository) Save(expense models.Expense) (*models.Expense, error) {
@@ -33,6 +51,8 @@ func (r *repository) Save(expense models.Expense) (*models.Expense, error) {
 	expense.ID = id + 1
 
 	r.tasks = append(r.tasks, expense)
+	fmt.Println(r.tasks)
+
 	r.lastID = expense.ID
 
 	if err := r.commit(); err != nil {
@@ -45,7 +65,7 @@ func (r *repository) getData() (*models.ExpenseDB, error) {
 	stream, err := utils.ReadFromJSON(r.sourceFile)
 
 	if err != nil {
-		return nil, err
+		return &models.ExpenseDB{}, nil
 	}
 
 	expenseData, err := utils.DeserializeFromJSON[models.ExpenseDB](stream)
