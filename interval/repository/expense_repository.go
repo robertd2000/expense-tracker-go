@@ -38,7 +38,6 @@ func (r *repository) Init() {
 
 	r.tasks = data.Expenses
 	r.lastID = data.LastID
-
 }
 
 func (r *repository) Save(expense models.Expense) (*models.Expense, error) {

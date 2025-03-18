@@ -2,6 +2,8 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"os"
 )
 
@@ -43,4 +45,17 @@ func DeserializeFromJSON[T any](data []byte) (T, error) {
 	}
 
 	return result, nil
+}
+
+func Delete(filePath string) error {
+    if _, err := os.Stat(filePath); os.IsNotExist(err) {
+        return errors.New("cannot delete file: file does not exist")
+    }
+
+    err := os.Remove(filePath)
+    if err != nil {
+        return fmt.Errorf("unable to delete file: %w", err)
+    }
+
+    return nil
 }
