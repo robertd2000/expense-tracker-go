@@ -58,9 +58,7 @@ func TestAdd(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
 
-		for i := 1; i <= 10; i++ {
-			repo.Save(*models.NewExpense("test"+fmt.Sprint(i), float64(i*100)))
-		}
+		addMultipleExpenses(repo, 10)
 
 		expenses, err := repo.GetAll()
 
@@ -79,8 +77,82 @@ func TestAdd(t *testing.T) {
 			checkData(t, expenses[i], want[i])
 		}
 	})
+
 }
 
+func TestDelete(t *testing.T) {
+	t.Run("delete last", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		deleted, err := repo.Delete(10)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		if len(expenses) != 9 {
+			t.Errorf("got total tasks %v, want %v", len(expenses), 9)
+		}
+
+		if id, _ := repo.GetLastID(); id != 9 {
+			t.Errorf("got las ID %v, want %v", id, 9)
+		}
+
+		if expenses[0].ID != 1 {
+			t.Errorf("got first ID %v, want %v", expenses[0].ID, 1)
+		}
+
+		if deleted.ID != 10 {
+			t.Errorf("got deleted ID %v, want %v", deleted.ID, 10)
+		}
+	})
+
+	t.Run("delete first", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		deleted, err := repo.Delete(1)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		if len(expenses) != 9 {
+			t.Errorf("got %v, want %v", len(expenses), 9)
+		}
+
+		if id, _ := repo.GetLastID(); id != 10 {
+			t.Errorf("got las ID %v, want %v", id, 10)
+		}
+
+		if expenses[0].ID != 2 {
+			t.Errorf("got first ID %v, want %v", expenses[0].ID, 2)
+		}
+
+		if deleted.ID != 1 {
+			t.Errorf("got deleted ID %v, want %v", deleted.ID, 1)
+		}
+	})
+}
 func MockExpenseTasks() []models.Expense {
 	tasks := make([]models.Expense, 0, 10) 
 
@@ -93,4 +165,10 @@ func MockExpenseTasks() []models.Expense {
     }
 
 	return tasks
+}
+
+func addMultipleExpenses(repository Repository, n int) {
+	for i := 1; i <= n; i++ {
+		repository.Save(*models.NewExpense("test"+fmt.Sprint(i), float64(i*100)))
+	}
 }

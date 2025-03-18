@@ -11,6 +11,7 @@ type Repository interface {
 	Save(expense models.Expense) (*models.Expense, error)
 	GetAll() ([]models.Expense, error)
 	GetLastID() (int, error)
+	Delete(id int) (*models.Expense, error)
 }
 
 type repository struct {
@@ -95,6 +96,40 @@ func (r *repository) GetLastID() (int, error) {
 	}
 
 	return expenseData.LastID, nil
+}
+
+func (r *repository) Delete(id int) (*models.Expense, error) {
+	entity, err := r.GetByID(id)
+	if err != nil {
+		return nil, fmt.Errorf("task with id %d not found", id)
+	}
+
+	for i, task := range r.tasks {
+		if task.ID == id {
+			r.tasks = append(r.tasks[:i], r.tasks[i+1:]...)
+			break
+		}
+	}
+
+	if id == r.lastID {
+		r.lastID--
+	}
+	
+	if err := r.commit(); err != nil {
+		return nil, err
+	}
+
+	return entity, nil
+}
+
+func (r *repository) GetByID(id int) (*models.Expense, error) {
+	for _, task := range r.tasks {
+		if task.ID == id {
+			return &task, nil
+		}
+	}
+
+	return nil, nil
 }
 
 func (r *repository) commit() error {
