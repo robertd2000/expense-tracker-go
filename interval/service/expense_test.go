@@ -64,7 +64,12 @@ func TestAddMultiple(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-
+	checkData := func(t testing.TB, got, want models.Expense) {
+		t.Helper()
+		if got.Amount != want.Amount || got.Details != want.Details || got.ID != want.ID {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
 	t.Run("delete last", func(t *testing.T) {
 		utils.Delete("test.json")
 
@@ -97,9 +102,7 @@ func TestDelete(t *testing.T) {
 		want := MockExpenseTasks()[:9]
 
 		for i := range 9 {
-			if got[i].Amount != want[i].Amount || got[i].Details != want[i].Details || got[i].ID != want[i].ID {
-				t.Errorf("got %v, want %v", got[i], want[i])
-			}
+			checkData(t, got[i], want[i])
 		}
 	})
 }
