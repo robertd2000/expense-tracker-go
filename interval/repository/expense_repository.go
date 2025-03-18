@@ -97,6 +97,16 @@ func (r *repository) GetLastID() (int, error) {
 	return expenseData.LastID, nil
 }
 
+func (r *repository) GetByID(id int) (*models.Expense, error) {
+	for _, task := range r.tasks {
+		if task.ID == id {
+			return &task, nil
+		}
+	}
+
+	return nil, nil
+}
+
 func (r *repository) commit() error {
 	db := models.ExpenseDB{
 		Expenses: r.tasks,
