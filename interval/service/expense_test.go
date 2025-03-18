@@ -55,11 +55,9 @@ func TestAddMultiple(t *testing.T) {
 	expenseRepository := repository.NewRepository("test.json")
 	expenseService := NewExpenseService(expenseRepository)
 
-	for i := 1; i <= 10; i++ {
-		expenseService.Add("test" + fmt.Sprint(i), float64(i * 100))
-	}
+	addMultipleExpenses(expenseService, 10)
 
-	expenses, err := expenseRepository.GetAll()
+	expenses, err := expenseService.GetAll()
 
 	if err != nil {
 		t.Errorf(err.Error())
@@ -81,5 +79,48 @@ func TestAddMultiple(t *testing.T) {
 
 	if lastId != 10 {
 		t.Errorf("got %v, want %v", lastId, 10)
+	}
+}
+
+func TestDelete(t *testing.T) {
+	t.Run("delete last", func(t *testing.T) {
+		utils.Delete("test.json")
+
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
+
+		addMultipleExpenses(expenseService, 10)
+
+		deleted, err := expenseService.Delete(10)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		expenses, err := expenseService.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		if len(expenses) != 9 {
+			t.Errorf("got total tasks %v, want %v", len(expenses), 9)
+		}
+
+		if expenses[0].ID != 1 {
+			t.Errorf("got first ID %v, want %v", expenses[0].ID, 1)
+		}
+
+		if deleted.ID != 10 {
+			t.Errorf("got deleted ID %v, want %v", deleted.ID, 10)
+		}
+	})
+}
+
+func addMultipleExpenses(expenseService ExpenseService, n int) {
+	for i := 1; i <= n; i++ {
+		expenseService.Add("test"+fmt.Sprint(i), float64(i*100))
 	}
 }

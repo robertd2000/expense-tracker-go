@@ -7,15 +7,18 @@ import (
 
 type ExpenseService interface {
 	Add(details string, amount float64) (*models.Expense, error)
+	GetAll() ([]models.Expense, error)
+	Delete(id int) (*models.Expense, error)
 }
 
-type expenseService struct{
+type expenseService struct {
 	repository repository.Repository
 }
 
+
 func NewExpenseService(repository repository.Repository) ExpenseService {
 	return &expenseService{
-		repository: repository,}
+		repository: repository}
 }
 
 func (e *expenseService) Add(details string, amount float64) (*models.Expense, error) {
@@ -28,3 +31,12 @@ func (e *expenseService) Add(details string, amount float64) (*models.Expense, e
 	}
 	return expense, nil
 }
+
+func (e *expenseService) GetAll() ([]models.Expense, error) {
+	return e.repository.GetAll()
+}
+
+func (e *expenseService) Delete(id int) (*models.Expense, error) {
+	return e.repository.Delete(id)
+}
+
