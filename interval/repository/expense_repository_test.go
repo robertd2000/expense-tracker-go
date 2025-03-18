@@ -99,6 +99,27 @@ func TestCRUD(t *testing.T) {
 			t.Errorf("got %v, want %v", id, 9)
 		}
 	})
+
+	t.Run("delete first", func(t *testing.T) {
+		repo := NewRepository("test.json")
+
+		repo.Delete(1)
+
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		if len(expenses) != 8 {
+			t.Errorf("got %v, want %v", len(expenses), 8)
+		}
+
+		if id, _ := repo.GetLastID(); id != 9 {
+			t.Errorf("got %v, want %v", id, 9)
+		}
+	})
 }
 
 func MockExpenseTasks() []models.Expense {
