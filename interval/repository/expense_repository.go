@@ -8,7 +8,7 @@ import (
 )
 
 type Repository interface {
-	Save(expense models.Expense) (models.Expense, error)
+	Save(expense models.Expense) (*models.Expense, error)
 	GetAll() ([]models.Expense, error)
 	GetLastID() (int, error)
 }
@@ -23,15 +23,22 @@ func NewRepository() Repository {
 	return &repository{}
 }
 
-func (r *repository) Save(expense models.Expense) (models.Expense, error) {
+func (r *repository) Save(expense models.Expense) (*models.Expense, error) {
 	id, err := r.GetLastID()
 
 	if err != nil {
-		return models.Expense{}, err
+		return nil, err
 	}
 
 	expense.ID = id + 1
-	return expense, nil
+
+	r.tasks = append(r.tasks, expense)
+	r.lastID = expense.ID
+
+	if err := r.commit(); err != nil {
+		return nil, err
+	}
+	return &expense, nil
 }
 
 func (r *repository) getData() (*models.ExpenseDB, error) {
