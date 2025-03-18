@@ -1,8 +1,6 @@
 package service
 
 import (
-	"time"
-
 	"github.com/robertd2000/expense-tracker/interval/models"
 )
 
@@ -17,5 +15,5 @@ func NewExpenseService() ExpenseService {
 }
 
 func (e *expenseService) Add(details string, amount float64) (models.Expense, error) {
-	return models.Expense{Details: details, Amount: amount, Date: time.Now(), ID: 1}, nil
+	return *models.NewExpense(1, details, amount), nil
 }
