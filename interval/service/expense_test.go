@@ -35,19 +35,6 @@ func TestAddOne(t *testing.T) {
 	}
 }
 
-func MockExpenseTasks() []models.Expense {
-	tasks := make([]models.Expense, 0, 10) 
-
-    for i := 1; i <= 10; i++ {
-        tasks = append(tasks, models.Expense{
-            ID:     i,       
-            Amount: float64(i * 100),
-			Details: "test" + fmt.Sprint(i),
-        })
-    }
-
-	return tasks
-}
 
 func TestAddMultiple(t *testing.T) {
 	utils.Delete("test.json")
@@ -123,4 +110,19 @@ func addMultipleExpenses(expenseService ExpenseService, n int) {
 	for i := 1; i <= n; i++ {
 		expenseService.Add("test"+fmt.Sprint(i), float64(i*100))
 	}
+}
+
+
+func MockExpenseTasks() []models.Expense {
+	tasks := make([]models.Expense, 0, 10) 
+
+    for i := 1; i <= 10; i++ {
+        tasks = append(tasks, models.Expense{
+            ID:     i,       
+            Amount: float64(i * 100),
+			Details: "test" + fmt.Sprint(i),
+        })
+    }
+
+	return tasks
 }
