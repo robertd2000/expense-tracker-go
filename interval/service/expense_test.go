@@ -71,25 +71,6 @@ func TestDelete(t *testing.T) {
 		}
 	}
 
-	checkParams := func(t testing.TB, delId, expId, length, expLength, firstId, expFirstId, lastId, expLastId int) {
-		t.Helper()
-		if delId != expId {
-			t.Errorf("got deleted ID %v, want %v", delId, expId)
-		}
-
-		if length != expLength {
-			t.Errorf("got length %v, want %v", length, expLength)
-		}
-
-		if firstId != expFirstId {
-			t.Errorf("got first ID %v, want %v", firstId, expFirstId)
-		}
-
-		if lastId != expLastId {
-			t.Errorf("got last ID %v, want %v", lastId, expLastId)
-		}
-	}
-
 	t.Run("delete last", func(t *testing.T) {
 		utils.Delete("test.json")
 
@@ -108,7 +89,7 @@ func TestDelete(t *testing.T) {
 		got := getExpenses(expenseService, t)
 		lastId, _ := expenseRepository.GetLastID()
 
-		checkParams(t, deleted.ID, 10, len(got), 9, got[0].ID, 1, lastId, 9)
+		utils.CheckParams(t, deleted.ID, 10, len(got), 9, got[0].ID, 1, lastId, 9)
 
 		want := MockExpenseTasks()[:9]
 
@@ -135,7 +116,7 @@ func TestDelete(t *testing.T) {
 		got := getExpenses(expenseService, t)
 		lastId, _ := expenseRepository.GetLastID()
 
-		checkParams(t, deleted.ID, 1, len(got), 9, got[0].ID, 2, lastId, 10)
+		utils.CheckParams(t, deleted.ID, 1, len(got), 9, got[0].ID, 2, lastId, 10)
 
 		want := MockExpenseTasks()[1:10]
 
