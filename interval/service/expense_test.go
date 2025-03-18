@@ -9,7 +9,11 @@ import (
 func TestAdd(t *testing.T) {
 	expenseService := NewExpenseService()
 
-	got := expenseService.Add("test", 1.0)
+	got, err := expenseService.Add("test", 1.0)
+
+	if err != nil {
+		t.Errorf("got %w want nil", err)
+	}
 	want := models.Expense{}
 
 	if got != want {
