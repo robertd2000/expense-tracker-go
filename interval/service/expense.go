@@ -6,8 +6,8 @@ import (
 )
 
 type ExpenseService interface {
-	Add(details string, amount float64) (*models.Expense, error)
 	GetAll() ([]models.Expense, error)
+	Add(details string, amount float64) (*models.Expense, error)
 	Delete(id int) (*models.Expense, error)
 }
 
