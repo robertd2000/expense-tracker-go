@@ -43,12 +43,7 @@ func TestAddMultiple(t *testing.T) {
 
 	addMultipleExpenses(expenseService, 10)
 
-	expenses, err := expenseService.GetAll()
-
-	if err != nil {
-		t.Errorf(err.Error())
-		t.Errorf("got nil")
-	}
+	expenses := getExpenses(expenseService, t)
 
 	if len(expenses) != 10 {
 		t.Errorf("got %v, want %v", len(expenses), 10)
@@ -69,17 +64,7 @@ func TestAddMultiple(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	getExpenses := func (expenseService ExpenseService)  []models.Expense {
-		got, err := expenseService.GetAll()
 
-		if err != nil {
-			t.Errorf(err.Error())
-			t.Errorf("got nil")
-		}
-
-		return got
-	}
-	
 	t.Run("delete last", func(t *testing.T) {
 		utils.Delete("test.json")
 
@@ -95,7 +80,7 @@ func TestDelete(t *testing.T) {
 			t.Errorf("got nil")
 		}
 
-		got := getExpenses(expenseService)
+		got := getExpenses(expenseService, t)
 
 		if len(got) != 9 {
 			t.Errorf("got total tasks %v, want %v", len(got), 9)
@@ -117,6 +102,17 @@ func TestDelete(t *testing.T) {
 			}
 		}
 	})
+}
+
+func getExpenses(expenseService ExpenseService, t *testing.T)  []models.Expense {
+	got, err := expenseService.GetAll()
+
+	if err != nil {
+		t.Errorf(err.Error())
+		t.Errorf("got nil")
+	}
+
+	return got
 }
 
 func addMultipleExpenses(expenseService ExpenseService, n int) {
