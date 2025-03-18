@@ -35,36 +35,15 @@ func TestAddOne(t *testing.T) {
 	}
 }
 
-func MockExpenseTasks() []models.Expense {
-	tasks := make([]models.Expense, 0, 10) 
-
-    for i := 1; i <= 10; i++ {
-        tasks = append(tasks, models.Expense{
-            ID:     i,       
-            Amount: float64(i * 100),
-			Details: "test" + fmt.Sprint(i),
-        })
-    }
-
-	return tasks
-}
-
 func TestAddMultiple(t *testing.T) {
 	utils.Delete("test.json")
 
 	expenseRepository := repository.NewRepository("test.json")
 	expenseService := NewExpenseService(expenseRepository)
 
-	for i := 1; i <= 10; i++ {
-		expenseService.Add("test" + fmt.Sprint(i), float64(i * 100))
-	}
+	addMultipleExpenses(expenseService, 10)
 
-	expenses, err := expenseRepository.GetAll()
-
-	if err != nil {
-		t.Errorf(err.Error())
-		t.Errorf("got nil")
-	}
+	expenses := getExpenses(expenseService, t)
 
 	if len(expenses) != 10 {
 		t.Errorf("got %v, want %v", len(expenses), 10)
@@ -82,4 +61,99 @@ func TestAddMultiple(t *testing.T) {
 	if lastId != 10 {
 		t.Errorf("got %v, want %v", lastId, 10)
 	}
+}
+
+func TestDelete(t *testing.T) {
+	checkData := func(t testing.TB, got, want models.Expense) {
+		t.Helper()
+		if got.Amount != want.Amount || got.Details != want.Details || got.ID != want.ID {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+
+	t.Run("delete last", func(t *testing.T) {
+		utils.Delete("test.json")
+
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
+
+		addMultipleExpenses(expenseService, 10)
+
+		deleted, err := expenseService.Delete(10)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		got := getExpenses(expenseService, t)
+		lastId, _ := expenseRepository.GetLastID()
+
+		utils.CheckParams(t, deleted.ID, 10, len(got), 9, got[0].ID, 1, lastId, 9)
+
+		want := MockExpenseTasks()[:9]
+
+		for i := range 9 {
+			checkData(t, got[i], want[i])
+		}
+	})
+
+	t.Run("delete first", func(t *testing.T) {
+		utils.Delete("test.json")
+
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
+
+		addMultipleExpenses(expenseService, 10)
+
+		deleted, err := expenseService.Delete(1)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		got := getExpenses(expenseService, t)
+		lastId, _ := expenseRepository.GetLastID()
+
+		utils.CheckParams(t, deleted.ID, 1, len(got), 9, got[0].ID, 2, lastId, 10)
+
+		want := MockExpenseTasks()[1:10]
+
+		for i := range 9 {
+			checkData(t, got[i], want[i])
+		}
+	})
+}
+
+func getExpenses(expenseService ExpenseService, t *testing.T)  []models.Expense {
+	got, err := expenseService.GetAll()
+
+	if err != nil {
+		t.Errorf(err.Error())
+		t.Errorf("got nil")
+	}
+
+	return got
+}
+
+func addMultipleExpenses(expenseService ExpenseService, n int) {
+	for i := 1; i <= n; i++ {
+		expenseService.Add("test"+fmt.Sprint(i), float64(i*100))
+	}
+}
+
+
+func MockExpenseTasks() []models.Expense {
+	tasks := make([]models.Expense, 0, 10) 
+
+    for i := 1; i <= 10; i++ {
+        tasks = append(tasks, models.Expense{
+            ID:     i,       
+            Amount: float64(i * 100),
+			Details: "test" + fmt.Sprint(i),
+        })
+    }
+
+	return tasks
 }

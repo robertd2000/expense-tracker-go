@@ -99,22 +99,8 @@ func TestDelete(t *testing.T) {
 			t.Errorf(err.Error())
 			t.Errorf("got nil")
 		}
-
-		if len(expenses) != 9 {
-			t.Errorf("got total tasks %v, want %v", len(expenses), 9)
-		}
-
-		if id, _ := repo.GetLastID(); id != 9 {
-			t.Errorf("got las ID %v, want %v", id, 9)
-		}
-
-		if expenses[0].ID != 1 {
-			t.Errorf("got first ID %v, want %v", expenses[0].ID, 1)
-		}
-
-		if deleted.ID != 10 {
-			t.Errorf("got deleted ID %v, want %v", deleted.ID, 10)
-		}
+		lastId, _ := repo.GetLastID()
+		utils.CheckParams(t, deleted.ID, 10, len(expenses), 9, expenses[0].ID, 1, lastId, 9)
 	})
 
 	t.Run("delete first", func(t *testing.T) {
@@ -136,23 +122,11 @@ func TestDelete(t *testing.T) {
 			t.Errorf("got nil")
 		}
 
-		if len(expenses) != 9 {
-			t.Errorf("got %v, want %v", len(expenses), 9)
-		}
-
-		if id, _ := repo.GetLastID(); id != 10 {
-			t.Errorf("got las ID %v, want %v", id, 10)
-		}
-
-		if expenses[0].ID != 2 {
-			t.Errorf("got first ID %v, want %v", expenses[0].ID, 2)
-		}
-
-		if deleted.ID != 1 {
-			t.Errorf("got deleted ID %v, want %v", deleted.ID, 1)
-		}
+		lastId, _ := repo.GetLastID()
+		utils.CheckParams(t, deleted.ID, 1, len(expenses), 9, expenses[0].ID, 2, lastId, 10)
 	})
 }
+
 func MockExpenseTasks() []models.Expense {
 	tasks := make([]models.Expense, 0, 10) 
 
