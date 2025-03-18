@@ -25,6 +25,12 @@ func TestNewRepository(t *testing.T) {
 	}
 }
 
+func addMultipleExpenses(repository Repository, n int) {
+	for i := 1; i <= n; i++ {
+		repository.Save(*models.NewExpense("test"+fmt.Sprint(i), float64(i*100)))
+	}
+}
+
 func TestCRUD(t *testing.T) {
 	checkData := func(t testing.TB, got, want models.Expense) {
 		t.Helper()
@@ -58,9 +64,7 @@ func TestCRUD(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
 
-		for i := 1; i <= 10; i++ {
-			repo.Save(*models.NewExpense("test"+fmt.Sprint(i), float64(i*100)))
-		}
+		addMultipleExpenses(repo, 10)
 
 		expenses, err := repo.GetAll()
 
@@ -80,9 +84,52 @@ func TestCRUD(t *testing.T) {
 		}
 	})
 	t.Run("delete last", func(t *testing.T) {
+		utils.Delete("test.json")
 		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
 
-		repo.Delete(10)
+		deleted, err := repo.Delete(10)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		if len(expenses) != 9 {
+			t.Errorf("got total tasks %v, want %v", len(expenses), 9)
+		}
+
+		if id, _ := repo.GetLastID(); id != 9 {
+			t.Errorf("got las ID %v, want %v", id, 9)
+		}
+
+		if expenses[0].ID != 1 {
+			t.Errorf("got first ID %v, want %v", expenses[0].ID, 1)
+		}
+
+		if deleted.ID != 10 {
+			t.Errorf("got deleted ID %v, want %v", deleted.ID, 10)
+		}
+	})
+
+	t.Run("delete first", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		deleted, err := repo.Delete(1)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
 
 		expenses, err := repo.GetAll()
 
@@ -95,29 +142,16 @@ func TestCRUD(t *testing.T) {
 			t.Errorf("got %v, want %v", len(expenses), 9)
 		}
 
-		if id, _ := repo.GetLastID(); id != 9 {
-			t.Errorf("got %v, want %v", id, 9)
-		}
-	})
-
-	t.Run("delete first", func(t *testing.T) {
-		repo := NewRepository("test.json")
-
-		repo.Delete(1)
-
-		expenses, err := repo.GetAll()
-
-		if err != nil {
-			t.Errorf(err.Error())
-			t.Errorf("got nil")
+		if id, _ := repo.GetLastID(); id != 10 {
+			t.Errorf("got las ID %v, want %v", id, 10)
 		}
 
-		if len(expenses) != 8 {
-			t.Errorf("got %v, want %v", len(expenses), 8)
+		if expenses[0].ID != 2 {
+			t.Errorf("got first ID %v, want %v", expenses[0].ID, 2)
 		}
 
-		if id, _ := repo.GetLastID(); id != 9 {
-			t.Errorf("got %v, want %v", id, 9)
+		if deleted.ID != 1 {
+			t.Errorf("got deleted ID %v, want %v", deleted.ID, 1)
 		}
 	})
 }
