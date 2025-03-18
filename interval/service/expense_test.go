@@ -35,7 +35,6 @@ func TestAddOne(t *testing.T) {
 	}
 }
 
-
 func TestAddMultiple(t *testing.T) {
 	utils.Delete("test.json")
 
@@ -85,23 +84,31 @@ func TestDelete(t *testing.T) {
 			t.Errorf("got nil")
 		}
 
-		expenses, err := expenseService.GetAll()
+		got, err := expenseService.GetAll()
 
 		if err != nil {
 			t.Errorf(err.Error())
 			t.Errorf("got nil")
 		}
 
-		if len(expenses) != 9 {
-			t.Errorf("got total tasks %v, want %v", len(expenses), 9)
+		if len(got) != 9 {
+			t.Errorf("got total tasks %v, want %v", len(got), 9)
 		}
 
-		if expenses[0].ID != 1 {
-			t.Errorf("got first ID %v, want %v", expenses[0].ID, 1)
+		if got[0].ID != 1 {
+			t.Errorf("got first ID %v, want %v", got[0].ID, 1)
 		}
 
 		if deleted.ID != 10 {
 			t.Errorf("got deleted ID %v, want %v", deleted.ID, 10)
+		}
+
+		want := MockExpenseTasks()[:9]
+
+		for i := range 9 {
+			if got[i].Amount != want[i].Amount || got[i].Details != want[i].Details || got[i].ID != want[i].ID {
+				t.Errorf("got %v, want %v", got[i], want[i])
+			}
 		}
 	})
 }
