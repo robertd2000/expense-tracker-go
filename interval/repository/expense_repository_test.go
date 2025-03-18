@@ -25,7 +25,7 @@ func TestNewRepository(t *testing.T) {
 	}
 }
 
-func TestAdd(t *testing.T) {
+func TestCRUD(t *testing.T) {
 	checkData := func(t testing.TB, got, want models.Expense) {
 		t.Helper()
 		if got.Amount != want.Amount || got.Details != want.Details || got.ID != want.ID {
@@ -77,6 +77,26 @@ func TestAdd(t *testing.T) {
 
 		for i := range 10 {
 			checkData(t, expenses[i], want[i])
+		}
+	})
+	t.Run("delete last", func(t *testing.T) {
+		repo := NewRepository("test.json")
+
+		repo.Delete(10)
+
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		if len(expenses) != 9 {
+			t.Errorf("got %v, want %v", len(expenses), 9)
+		}
+
+		if id, _ := repo.GetLastID(); id != 9 {
+			t.Errorf("got %v, want %v", id, 9)
 		}
 	})
 }
