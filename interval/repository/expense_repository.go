@@ -47,3 +47,13 @@ func (r *repository) GetAll() ([]models.Expense, error) {
 
 	return expenseData.Expenses, nil
 }
+
+func (r *repository) GetLastID() (int, error) {
+	expenseData, err := r.getData()
+
+	if err != nil {
+		return -1, err
+	}
+
+	return expenseData.LastID, nil
+}
