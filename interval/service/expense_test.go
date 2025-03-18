@@ -6,9 +6,11 @@ import (
 
 	"github.com/robertd2000/expense-tracker/interval/models"
 	"github.com/robertd2000/expense-tracker/interval/repository"
+	"github.com/robertd2000/expense-tracker/interval/utils"
 )
 
-func TestAdd(t *testing.T) {
+func TestAddOne(t *testing.T) {
+	utils.Delete("test.json")
 
 	expenseRepository := repository.NewRepository("test.json")
 	expenseService := NewExpenseService(expenseRepository)
@@ -20,7 +22,7 @@ func TestAdd(t *testing.T) {
 		t.Errorf("got nil")
 	}
 	want := &models.Expense{
-		ID:      2,
+		ID:      1,
 		Details: "test",
 		Amount:  1.0,
 		Date:    time.Now(),
