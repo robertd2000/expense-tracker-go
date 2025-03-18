@@ -2,18 +2,29 @@ package service
 
 import (
 	"github.com/robertd2000/expense-tracker/interval/models"
+	"github.com/robertd2000/expense-tracker/interval/repository"
 )
 
 type ExpenseService interface {
-	Add(details string, amount float64) (models.Expense, error)
+	Add(details string, amount float64) (*models.Expense, error)
 }
 
-type expenseService struct{}
-
-func NewExpenseService() ExpenseService {
-	return &expenseService{}
+type expenseService struct{
+	repository repository.Repository
 }
 
-func (e *expenseService) Add(details string, amount float64) (models.Expense, error) {
-	return *models.NewExpense(1, details, amount), nil
+func NewExpenseService(repository repository.Repository) ExpenseService {
+	return &expenseService{
+		repository: repository,}
+}
+
+func (e *expenseService) Add(details string, amount float64) (*models.Expense, error) {
+	expense := models.NewExpense(details, amount)
+
+	expense, err := e.repository.Save(*expense)
+
+	if err != nil {
+		return nil, err
+	}
+	return expense, nil
 }
