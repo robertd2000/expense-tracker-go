@@ -1,4 +1,17 @@
 {
-  "Expenses": null,
-  "LastID": 0
+  "Expenses": [
+    {
+      "id": 1,
+      "details": "test",
+      "amount": 1,
+      "date": "2025-03-18T17:36:29.132387+03:00"
+    },
+    {
+      "id": 2,
+      "details": "test",
+      "amount": 1,
+      "date": "2025-03-18T17:37:18.4370616+03:00"
+    }
+  ],
+  "LastID": 2
 }
