@@ -31,7 +31,7 @@ func addMultipleExpenses(repository Repository, n int) {
 	}
 }
 
-func TestCRUD(t *testing.T) {
+func TestAdd(t *testing.T) {
 	checkData := func(t testing.TB, got, want models.Expense) {
 		t.Helper()
 		if got.Amount != want.Amount || got.Details != want.Details || got.ID != want.ID {
@@ -83,6 +83,10 @@ func TestCRUD(t *testing.T) {
 			checkData(t, expenses[i], want[i])
 		}
 	})
+
+}
+
+func TestDelete(t *testing.T) {
 	t.Run("delete last", func(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
@@ -155,7 +159,6 @@ func TestCRUD(t *testing.T) {
 		}
 	})
 }
-
 func MockExpenseTasks() []models.Expense {
 	tasks := make([]models.Expense, 0, 10) 
 
