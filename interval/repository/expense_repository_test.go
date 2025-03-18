@@ -25,11 +25,14 @@ func TestNewRepository(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	checkData := func(t testing.TB, got, want interface{}) {
+	checkData := func(t testing.TB, got, want models.Expense) {
 		t.Helper()
-		if !reflect.DeepEqual(got, want) {
+		if got.Amount != want.Amount || got.Details != want.Details || got.ID != want.ID {
 			t.Errorf("got %v, want %v", got, want)
 		}
+		// if !reflect.DeepEqual(got, want) {
+		// 	t.Errorf("got %v, want %v", got, want)
+		// }
 	}
 
 	t.Run("add one task", func(t *testing.T) {
@@ -42,7 +45,7 @@ func TestAdd(t *testing.T) {
 			t.Errorf("got nil")
 		}
 
-		want := &models.Expense{
+		want := models.Expense{
 			ID:      1,
 			Details: "test",
 			Amount:  1.0,
