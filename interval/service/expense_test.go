@@ -38,7 +38,6 @@ func TestAddOne(t *testing.T) {
 func MockExpenseTasks() []models.Expense {
 	tasks := make([]models.Expense, 0, 10) 
 
-    // Заполняем срез задачами
     for i := 1; i <= 10; i++ {
         tasks = append(tasks, models.Expense{
             ID:     i,       
