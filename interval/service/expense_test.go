@@ -72,10 +72,15 @@ func TestAddMultiple(t *testing.T) {
 	}
 
 	mockTasks := MockExpenseTasks()
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		if expenses[i].Amount != mockTasks[i].Amount || expenses[i].Details != mockTasks[i].Details || expenses[i].ID != mockTasks[i].ID {
 			t.Errorf("got %v, want %v", expenses[i], mockTasks[i])
 		}
 	}
 
+	lastId, _ := expenseRepository.GetLastID()
+
+	if lastId != 10 {
+		t.Errorf("got %v, want %v", lastId, 10)
+	}
 }
