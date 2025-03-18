@@ -116,6 +116,33 @@ func TestDelete(t *testing.T) {
 			checkData(t, got[i], want[i])
 		}
 	})
+
+	t.Run("delete first", func(t *testing.T) {
+		utils.Delete("test.json")
+
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
+
+		addMultipleExpenses(expenseService, 10)
+
+		deleted, err := expenseService.Delete(1)
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		got := getExpenses(expenseService, t)
+		lastId, _ := expenseRepository.GetLastID()
+
+		checkParams(t, deleted.ID, 1, len(got), 9, got[0].ID, 2, lastId, 10)
+
+		want := MockExpenseTasks()[1:10]
+
+		for i := range 9 {
+			checkData(t, got[i], want[i])
+		}
+	})
 }
 
 func getExpenses(expenseService ExpenseService, t *testing.T)  []models.Expense {
