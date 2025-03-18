@@ -25,12 +25,6 @@ func TestNewRepository(t *testing.T) {
 	}
 }
 
-func addMultipleExpenses(repository Repository, n int) {
-	for i := 1; i <= n; i++ {
-		repository.Save(*models.NewExpense("test"+fmt.Sprint(i), float64(i*100)))
-	}
-}
-
 func TestAdd(t *testing.T) {
 	checkData := func(t testing.TB, got, want models.Expense) {
 		t.Helper()
@@ -171,4 +165,10 @@ func MockExpenseTasks() []models.Expense {
     }
 
 	return tasks
+}
+
+func addMultipleExpenses(repository Repository, n int) {
+	for i := 1; i <= n; i++ {
+		repository.Save(*models.NewExpense("test"+fmt.Sprint(i), float64(i*100)))
+	}
 }
