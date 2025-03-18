@@ -38,6 +38,8 @@ func (r *repository) Init() {
 
 	r.tasks = data.Expenses
 	r.lastID = data.LastID
+
+	r.commit()
 }
 
 func (r *repository) Save(expense models.Expense) (*models.Expense, error) {
@@ -50,7 +52,6 @@ func (r *repository) Save(expense models.Expense) (*models.Expense, error) {
 	expense.ID = id + 1
 
 	r.tasks = append(r.tasks, expense)
-	fmt.Println(r.tasks)
 
 	r.lastID = expense.ID
 
