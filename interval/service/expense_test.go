@@ -139,7 +139,7 @@ func TestUpdate(t *testing.T) {
 
 		expenseRepository := repository.NewRepository("test.json")
 		expenseService := NewExpenseService(expenseRepository)
-		
+
 		addMultipleExpenses(expenseService, 10)
 
 		expenseService.Update(1, models.Expense{Details: "updated"})
@@ -162,14 +162,17 @@ func TestUpdate(t *testing.T) {
 	
 	t.Run("update multiple tasks details", func(t *testing.T) {
 		utils.Delete("test.json")
-		repo := NewRepository("test.json")
-		addMultipleExpenses(repo, 10)
+		
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
+
+		addMultipleExpenses(expenseService, 10)
 
 		for i := 3; i <= 6; i++ {
-			repo.Update(i, models.Expense{Details: "updated" + fmt.Sprint(i)})
+			expenseService.Update(i, models.Expense{Details: "updated" + fmt.Sprint(i)})
 		}
 
-		expenses, err := repo.GetAll()
+		expenses, err := expenseService.GetAll()
 
 		for i := 3; i <= 6; i++ {
 			want := models.Expense{
