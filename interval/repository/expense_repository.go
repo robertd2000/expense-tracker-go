@@ -13,7 +13,7 @@ type Repository interface {
 	GetLastID() (int, error)
 	Delete(id int) (*models.Expense, error)
 	Update(id int, expense models.Expense) (*models.Expense, error)
-	GetSummary() (float64, error)
+	GetSummary(filterDate ...int) (float64, error)
 }
 
 type repository struct {
@@ -161,10 +161,13 @@ func (r *repository) Update(id int, expense models.Expense) (*models.Expense, er
 	return entity, nil
 }
 
-func (r *repository) GetSummary() (float64, error) {
+func (r *repository) GetSummary(filterDate ...int) (float64, error) {
 	sum := 0.0
 
 	for _, task := range r.tasks {
+		if len(filterDate) > 0 && int(task.Date.Month()) != filterDate[0] {
+			continue
+		}
 		sum += task.Amount
 	}
 
