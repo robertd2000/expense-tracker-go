@@ -127,6 +127,117 @@ func TestDelete(t *testing.T) {
 	})
 }
 
+func TestUpdate(t *testing.T) {
+	checkData := func(t testing.TB, got, want models.Expense) {
+		t.Helper()
+		if got.Amount != want.Amount || got.Details != want.Details || got.ID != want.ID {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+
+	t.Run("update one task details", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		repo.Update(1, models.Expense{Details: "updated"})
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := models.Expense{
+			ID:      1,
+			Details: "updated",
+			Amount:  100,
+			Date:    time.Now(),
+		}
+
+		checkData(t, expenses[0], want)
+	})
+	
+	t.Run("update multiple tasks details", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		for i := 3; i <= 6; i++ {
+			repo.Update(i, models.Expense{Details: "updated" + fmt.Sprint(i)})
+		}
+
+		expenses, err := repo.GetAll()
+
+		for i := 3; i <= 6; i++ {
+			want := models.Expense{
+				ID:      i,
+				Details: "updated" + fmt.Sprint(i),
+				Amount:  float64(i * 100),
+				Date:    time.Now(),
+			}
+
+			checkData(t, expenses[i-1], want)
+		}
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+	})
+
+	t.Run("update one task amount", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		repo.Update(1, models.Expense{Amount: 111})
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := models.Expense{
+			ID:      1,
+			Details: "test1",
+			Amount:  111,
+			Date:    time.Now(),
+		}
+
+		checkData(t, expenses[0], want)
+	})
+
+	t.Run("update multiple tasks amount", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		for i := 3; i <= 6; i++ {
+			repo.Update(i, models.Expense{Amount: float64(i * 111)})
+		}
+
+		expenses, err := repo.GetAll()
+
+		for i := 3; i <= 6; i++ {
+			want := models.Expense{
+				ID:      i,
+				Details: "test" + fmt.Sprint(i),
+				Amount:  float64(i * 111),
+				Date:    time.Now(),
+			}
+
+			checkData(t, expenses[i-1], want)
+		}
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+	})
+}
+
 func MockExpenseTasks() []models.Expense {
 	tasks := make([]models.Expense, 0, 10) 
 

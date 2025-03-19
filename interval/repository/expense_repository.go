@@ -12,6 +12,7 @@ type Repository interface {
 	GetAll() ([]models.Expense, error)
 	GetLastID() (int, error)
 	Delete(id int) (*models.Expense, error)
+	Update(id int, expense models.Expense) (*models.Expense, error)
 }
 
 type repository struct {
@@ -19,6 +20,7 @@ type repository struct {
 	tasks      []models.Expense
 	lastID     int
 }
+
 
 func NewRepository(sourceFile string) Repository {
 	repo := &repository{
@@ -114,7 +116,7 @@ func (r *repository) Delete(id int) (*models.Expense, error) {
 	if id == r.lastID {
 		r.lastID--
 	}
-	
+
 	if err := r.commit(); err != nil {
 		return nil, err
 	}
@@ -132,11 +134,38 @@ func (r *repository) GetByID(id int) (*models.Expense, error) {
 	return nil, nil
 }
 
+func (r *repository) Update(id int, expense models.Expense) (*models.Expense, error) {
+	var entity *models.Expense
+
+	for i := range r.tasks {
+		if r.tasks[i].ID == id {
+			if expense.Details != "" {
+                r.tasks[i].Details = expense.Details
+            }
+            if expense.Amount != 0 {
+                r.tasks[i].Amount = expense.Amount
+            }
+			entity = &r.tasks[i]
+			break
+		}
+	}
+
+	if entity == nil {
+		return nil, fmt.Errorf("task with id %d not found", id)
+	}
+
+	if err := r.commit(); err != nil {
+		return nil, fmt.Errorf("failed to commit changes: %v", err)
+	}
+
+	return entity, nil
+}
+
 func (r *repository) commit() error {
 	db := models.ExpenseDB{
 		Expenses: r.tasks,
 		LastID:   r.lastID,
-	} 
+	}
 	s, err := utils.SerializeToJSON(db)
 	if err != nil {
 		return fmt.Errorf("unable to serialize task: %w", err)

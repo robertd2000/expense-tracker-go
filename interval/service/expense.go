@@ -39,4 +39,3 @@ func (e *expenseService) Add(details string, amount float64) (*models.Expense, e
 func (e *expenseService) Delete(id int) (*models.Expense, error) {
 	return e.repository.Delete(id)
 }
-
