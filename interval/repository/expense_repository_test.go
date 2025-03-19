@@ -310,6 +310,30 @@ func TestSummary(t *testing.T) {
 
 		checkData(t, summary, want)
 	})
+		
+	t.Run("get summary of 9 tasks from March", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		expenses[3].Date = time.Date(2022, 4, 1, 0, 0, 0, 0, time.UTC)
+
+		summary, err := repo.GetSummary(4)
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := 5200.0
+
+		checkData(t, summary, want)
+	})
 }
 
 func MockExpenseTasks() []models.Expense {
