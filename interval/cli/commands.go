@@ -19,6 +19,23 @@ func NewCommands(expenseService service.ExpenseService) *Commands {
 	return &Commands{expenseService: expenseService}
 }
 
+func (c *Commands) List() {
+	records, err := c.expenseService.GetAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("# ID  Date       Description  Amount\n")
+
+	// Выводим данные
+	for _, record := range records {
+		fmt.Printf("# %-3d %-10s %-12s $%.2f\n",
+			record.ID,
+			record.Date.Format("2006-01-02"),
+			record.Details,
+			record.Amount,
+		)
+	}
+}
 
 func (c *Commands) Add(args []string) {
 	addCmd := flag.NewFlagSet("add", flag.ExitOnError)
