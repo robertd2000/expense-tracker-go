@@ -193,11 +193,14 @@ func TestUpdate(t *testing.T) {
 
 	t.Run("update one task amount", func(t *testing.T) {
 		utils.Delete("test.json")
-		repo := NewRepository("test.json")
-		addMultipleExpenses(repo, 10)
+		
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
 
-		repo.Update(1, models.Expense{Amount: 111})
-		expenses, err := repo.GetAll()
+		addMultipleExpenses(expenseService, 10)
+
+		expenseService.Update(1, models.Expense{Amount: 111})
+		expenses, err := expenseService.GetAll()
 
 		if err != nil {
 			t.Errorf(err.Error())
