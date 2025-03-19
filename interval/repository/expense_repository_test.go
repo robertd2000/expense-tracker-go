@@ -185,6 +185,29 @@ func TestUpdate(t *testing.T) {
 			t.Errorf("got nil")
 		}
 	})
+
+	t.Run("update one task amount", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		repo.Update(1, models.Expense{Amount: 111})
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := models.Expense{
+			ID:      1,
+			Details: "test1",
+			Amount:  111,
+			Date:    time.Now(),
+		}
+
+		checkData(t, expenses[0], want)
+	})
 }
 
 func MockExpenseTasks() []models.Expense {
