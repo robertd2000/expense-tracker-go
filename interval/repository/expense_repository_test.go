@@ -208,6 +208,34 @@ func TestUpdate(t *testing.T) {
 
 		checkData(t, expenses[0], want)
 	})
+
+	t.Run("update multiple tasks amount", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		for i := 3; i <= 6; i++ {
+			repo.Update(i, models.Expense{Amount: float64(i * 111)})
+		}
+
+		expenses, err := repo.GetAll()
+
+		for i := 3; i <= 6; i++ {
+			want := models.Expense{
+				ID:      i,
+				Details: "test" + fmt.Sprint(i),
+				Amount:  float64(i * 111),
+				Date:    time.Now(),
+			}
+
+			checkData(t, expenses[i-1], want)
+		}
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+	})
 }
 
 func MockExpenseTasks() []models.Expense {
