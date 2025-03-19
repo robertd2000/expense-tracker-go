@@ -238,6 +238,31 @@ func TestUpdate(t *testing.T) {
 	})
 }
 
+func TestSummary(t *testing.T) {
+	checkData := func(t testing.TB, got, want float64) {
+		t.Helper()
+		if got != want {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+
+	t.Run("get summary of 10 tasks from 100 to 1000", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
+		summary, err := repo.Summary()
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := 5500.0
+
+		checkData(t, summary, want)
+	})
+}
+
 func MockExpenseTasks() []models.Expense {
 	tasks := make([]models.Expense, 0, 10) 
 
