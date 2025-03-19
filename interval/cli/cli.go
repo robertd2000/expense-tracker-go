@@ -26,8 +26,8 @@ func CLI(expenseService service.ExpenseService) {
 		commands.Delete(args)
 	// case "list":
 	// 	commands.List(args)
-	// case "summary":
-	// 	commands.Summary(args)
+	case "summary":
+		commands.Summary(args)
 	default:
 		fmt.Println("Invalid command")
 	}
