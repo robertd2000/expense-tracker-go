@@ -284,7 +284,7 @@ func TestSummary(t *testing.T) {
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
 
-		month := getCurrentMonth() + 1
+		month := utils.GetCurrentMonth() + 1
 		summary, err := repo.GetSummary(month)
 		if err != nil {
 			t.Errorf(err.Error())
@@ -302,7 +302,7 @@ func TestSummary(t *testing.T) {
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
 
-		month := getCurrentMonth() + 1
+		month := utils.GetCurrentMonth() + 1
 		summary, err := repo.GetSummary(month)
 		if err != nil {
 			t.Errorf(err.Error())
@@ -318,7 +318,7 @@ func TestSummary(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
-		month := getCurrentMonth()
+		month := utils.GetCurrentMonth()
 
 		summary, err := repo.GetSummary(month)
 		if err != nil {
@@ -334,16 +334,6 @@ func TestSummary(t *testing.T) {
 
 		checkData(t, summary, want)
 	})
-}
-
-func getCurrentMonth() int {
-	now := time.Now()
-
-	currentMonth := now.Month()
-
-	currentMonthNumber := int(currentMonth)
-	
-	return currentMonthNumber
 }
 
 func MockExpenseTasks() []models.Expense {
