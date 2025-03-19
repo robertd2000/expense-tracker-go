@@ -79,7 +79,7 @@ func (c *Commands) Summary(args []string) {
 			log.Fatal(err)
 		}
 		fmt.Printf("Total amount: %f\n", summary)
-		
+		return
 	}
 
 	i, err := strconv.Atoi(*month)
