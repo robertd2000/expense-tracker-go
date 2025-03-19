@@ -64,3 +64,32 @@ func (c *Commands) Delete(args []string) {
 
 	fmt.Printf("Task with ID %s deleted\n", *id)
 }
+
+func (c *Commands) Summary(args []string) {
+	addCmd := flag.NewFlagSet("summary", flag.ExitOnError)
+	month := addCmd.String("month", "", "ID of the item")
+
+	addCmd.Parse(os.Args[2:])
+
+	if *month == "" {
+		summary, err := c.expenseService.GetSummary()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Total amount: %f\n", summary)
+		
+	}
+
+	i, err := strconv.Atoi(*month)
+    if err != nil {
+		log.Fatal(err)
+    }
+
+	summary, err := c.expenseService.GetSummary(i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Total amount for August: %f\n", summary)
+}
