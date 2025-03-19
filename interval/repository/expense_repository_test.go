@@ -261,6 +261,23 @@ func TestSummary(t *testing.T) {
 
 		checkData(t, summary, want)
 	})
+	
+	t.Run("get summary of 9 tasks from 100 to 1000 with ID 5 deleted", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+		repo.Delete(5)
+
+		summary, err := repo.GetSummary()
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := 5000.0
+
+		checkData(t, summary, want)
+	})
 }
 
 func MockExpenseTasks() []models.Expense {
