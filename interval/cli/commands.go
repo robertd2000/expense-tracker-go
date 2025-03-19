@@ -62,5 +62,5 @@ func (c *Commands) Delete(args []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Task with description %s created\n", *id)
+	fmt.Printf("Task with ID %s deleted\n", *id)
 }
