@@ -251,7 +251,7 @@ func TestSummary(t *testing.T) {
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
 
-		summary, err := repo.Summary()
+		summary, err := repo.GetSummary()
 		if err != nil {
 			t.Errorf(err.Error())
 			t.Errorf("got nil")

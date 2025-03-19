@@ -13,6 +13,7 @@ type Repository interface {
 	GetLastID() (int, error)
 	Delete(id int) (*models.Expense, error)
 	Update(id int, expense models.Expense) (*models.Expense, error)
+	GetSummary() (float64, error)
 }
 
 type repository struct {
@@ -20,7 +21,6 @@ type repository struct {
 	tasks      []models.Expense
 	lastID     int
 }
-
 
 func NewRepository(sourceFile string) Repository {
 	repo := &repository{
@@ -140,11 +140,11 @@ func (r *repository) Update(id int, expense models.Expense) (*models.Expense, er
 	for i := range r.tasks {
 		if r.tasks[i].ID == id {
 			if expense.Details != "" {
-                r.tasks[i].Details = expense.Details
-            }
-            if expense.Amount != 0 {
-                r.tasks[i].Amount = expense.Amount
-            }
+				r.tasks[i].Details = expense.Details
+			}
+			if expense.Amount != 0 {
+				r.tasks[i].Amount = expense.Amount
+			}
 			entity = &r.tasks[i]
 			break
 		}
@@ -159,6 +159,16 @@ func (r *repository) Update(id int, expense models.Expense) (*models.Expense, er
 	}
 
 	return entity, nil
+}
+
+func (r *repository) GetSummary() (float64, error) {
+	sum := 0.0
+
+	for _, task := range r.tasks {
+		sum += task.Amount
+	}
+
+	return sum, nil
 }
 
 func (r *repository) commit() error {
