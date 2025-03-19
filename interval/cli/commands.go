@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/robertd2000/expense-tracker/interval/service"
 )
@@ -18,20 +19,18 @@ func NewCommands(expenseService service.ExpenseService) *Commands {
 
 
 func (c *Commands) Add(args []string) {
-	description := flag.String("description", "", "Description of the item (e.g., 'Lunch')")
+	addCmd := flag.NewFlagSet("add", flag.ExitOnError)
+	description := addCmd.String("description", "", "Description of the item (e.g., 'Lunch')")
+	amount := addCmd.Int("amount", 0, "Amount of the item (e.g., 20)")
 
-	// Определяем числовой флаг --amount
-	amount := flag.Int("amount", 0, "Amount of the item (e.g., 20)")
+	addCmd.Parse(os.Args[2:])
 
-	// Парсим аргументы командной строки
-	flag.Parse()
-
-	// Проверяем, были ли переданы обязательные флаги
 	if *description == "" || *amount == 0 {
 		fmt.Println("Error: Both --description and --amount are required.")
-		flag.Usage() // Показываем справку по использованию
+		addCmd.Usage()
 		return
 	}
+
 	_, err := c.expenseService.Add(*description, float64(*amount))
 	if err != nil {
 		log.Fatal(err)
