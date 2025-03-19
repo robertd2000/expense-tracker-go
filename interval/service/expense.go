@@ -10,7 +10,7 @@ type ExpenseService interface {
 	Add(details string, amount float64) (*models.Expense, error)
 	Delete(id int) (*models.Expense, error)
 	Update(id int, expense models.Expense) (*models.Expense, error)
-	GetSummary() (float64, error)
+	GetSummary(filterDate ...int) (float64, error)
 }
 
 type expenseService struct {
@@ -45,6 +45,6 @@ func (e *expenseService) Update(id int, expense models.Expense) (*models.Expense
 	return e.repository.Update(id, expense)
 }
 
-func (e *expenseService) GetSummary() (float64, error) {
-	return e.repository.GetSummary()
+func (e *expenseService) GetSummary(filterDate ...int) (float64, error) {
+	return e.repository.GetSummary(filterDate...)
 }
