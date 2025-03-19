@@ -138,6 +138,8 @@ func TestUpdate(t *testing.T) {
 	t.Run("update one task", func(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
+		addMultipleExpenses(repo, 10)
+
 		repo.Update(1, models.Expense{Details: "updated"})
 		expenses, err := repo.GetAll()
 
@@ -149,7 +151,7 @@ func TestUpdate(t *testing.T) {
 		want := models.Expense{
 			ID:      1,
 			Details: "updated",
-			Amount:  1.0,
+			Amount:  100,
 			Date:    time.Now(),
 		}
 
