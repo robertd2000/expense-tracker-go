@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/robertd2000/expense-tracker/interval/service"
 )
@@ -37,4 +38,29 @@ func (c *Commands) Add(args []string) {
 	}
 
 	fmt.Printf("Task with description %s created\n", *description)
+}
+
+func (c *Commands) Delete(args []string) {
+	addCmd := flag.NewFlagSet("delete", flag.ExitOnError)
+	id := addCmd.String("id", "", "ID of the item")
+
+	addCmd.Parse(os.Args[2:])
+
+	if *id == "" {
+		fmt.Println("Error: Both --description and --amount are required.")
+		addCmd.Usage()
+		return
+	}
+
+	i, err := strconv.Atoi(*id)
+    if err != nil {
+		log.Fatal(err)
+    }
+
+	_, err = c.expenseService.Delete(i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Task with description %s created\n", *id)
 }
