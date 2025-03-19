@@ -316,7 +316,7 @@ func TestSummary(t *testing.T) {
 		checkData(t, summary, want)
 	})
 			
-	t.Run("get summary of 9 tasks from April", func(t *testing.T) {
+	t.Run("get summary of 9 tasks from next month", func(t *testing.T) {
 		utils.Delete("test.json")
 			
 		expenseRepository := repository.NewRepository("test.json")
@@ -324,8 +324,9 @@ func TestSummary(t *testing.T) {
 
 		addMultipleExpenses(expenseService, 10)
 		expenseService.Delete(5)
+		month := utils.GetCurrentMonth() + 1
 
-		summary, err := expenseService.GetSummary(4)
+		summary, err := expenseService.GetSummary(month)
 		if err != nil {
 			t.Errorf(err.Error())
 			t.Errorf("got nil")
