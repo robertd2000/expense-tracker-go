@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/robertd2000/expense-tracker/interval/service"
+	"github.com/robertd2000/expense-tracker/interval/utils"
 )
 
 type Commands struct {
@@ -91,5 +92,7 @@ func (c *Commands) Summary(args []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Total amount for August: %f\n", summary)
+	monthName := utils.GetCurrentMonthName()
+
+	fmt.Printf("Total amount for %s: %f\n",monthName, summary)
 }
