@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/robertd2000/expense-tracker/interval/service"
+	"github.com/robertd2000/expense-tracker/interval/utils"
 )
 
 type Commands struct {
@@ -37,4 +39,60 @@ func (c *Commands) Add(args []string) {
 	}
 
 	fmt.Printf("Task with description %s created\n", *description)
+}
+
+func (c *Commands) Delete(args []string) {
+	addCmd := flag.NewFlagSet("delete", flag.ExitOnError)
+	id := addCmd.String("id", "", "ID of the item")
+
+	addCmd.Parse(os.Args[2:])
+
+	if *id == "" {
+		fmt.Println("Error: Both --description and --amount are required.")
+		addCmd.Usage()
+		return
+	}
+
+	i, err := strconv.Atoi(*id)
+    if err != nil {
+		log.Fatal(err)
+    }
+
+	_, err = c.expenseService.Delete(i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Task with ID %s deleted\n", *id)
+}
+
+func (c *Commands) Summary(args []string) {
+	addCmd := flag.NewFlagSet("summary", flag.ExitOnError)
+	month := addCmd.String("month", "", "ID of the item")
+
+	addCmd.Parse(os.Args[2:])
+
+	if *month == "" {
+		summary, err := c.expenseService.GetSummary()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Total amount: %f\n", summary)
+		return
+	}
+
+	i, err := strconv.Atoi(*month)
+    if err != nil {
+		log.Fatal(err)
+    }
+
+	summary, err := c.expenseService.GetSummary(i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	monthName := utils.GetCurrentMonthName()
+
+	fmt.Printf("Total amount for %s: %f\n",monthName, summary)
 }

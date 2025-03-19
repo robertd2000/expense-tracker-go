@@ -11,3 +11,11 @@ func GetCurrentMonth() int {
 
 	return currentMonthNumber
 }
+
+func GetCurrentMonthName() string {
+	now := time.Now()
+
+	currentMonth := now.Month()
+
+	return currentMonth.String()
+}
