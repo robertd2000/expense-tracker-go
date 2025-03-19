@@ -127,6 +127,36 @@ func TestDelete(t *testing.T) {
 	})
 }
 
+func TestUpdate(t *testing.T) {
+	checkData := func(t testing.TB, got, want models.Expense) {
+		t.Helper()
+		if got.Amount != want.Amount || got.Details != want.Details || got.ID != want.ID {
+			t.Errorf("got %v, want %v", got, want)
+		}
+	}
+
+	t.Run("update one task", func(t *testing.T) {
+		utils.Delete("test.json")
+		repo := NewRepository("test.json")
+		repo.Update(1, models.Expense{Details: "updated"})
+		expenses, err := repo.GetAll()
+
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := models.Expense{
+			ID:      1,
+			Details: "updated",
+			Amount:  1.0,
+			Date:    time.Now(),
+		}
+
+		checkData(t, expenses[0], want)
+	})
+}
+
 func MockExpenseTasks() []models.Expense {
 	tasks := make([]models.Expense, 0, 10) 
 
