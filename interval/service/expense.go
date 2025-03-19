@@ -10,12 +10,12 @@ type ExpenseService interface {
 	Add(details string, amount float64) (*models.Expense, error)
 	Delete(id int) (*models.Expense, error)
 	Update(id int, expense models.Expense) (*models.Expense, error)
+	GetSummary() (float64, error)
 }
 
 type expenseService struct {
 	repository repository.Repository
 }
-
 
 func NewExpenseService(repository repository.Repository) ExpenseService {
 	return &expenseService{
@@ -43,4 +43,8 @@ func (e *expenseService) Delete(id int) (*models.Expense, error) {
 
 func (e *expenseService) Update(id int, expense models.Expense) (*models.Expense, error) {
 	return e.repository.Update(id, expense)
+}
+
+func (e *expenseService) GetSummary() (float64, error) {
+	return e.repository.GetSummary()
 }
