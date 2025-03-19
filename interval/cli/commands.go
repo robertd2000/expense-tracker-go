@@ -36,5 +36,5 @@ func (c *Commands) Add(args []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Task with description %s created\n", description)
+	fmt.Printf("Task with description %s created\n", *description)
 }
