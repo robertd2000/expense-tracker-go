@@ -135,7 +135,7 @@ func TestUpdate(t *testing.T) {
 		}
 	}
 
-	t.Run("update one task", func(t *testing.T) {
+	t.Run("update one task details", func(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
@@ -158,7 +158,7 @@ func TestUpdate(t *testing.T) {
 		checkData(t, expenses[0], want)
 	})
 	
-	t.Run("update multiple tasks", func(t *testing.T) {
+	t.Run("update multiple tasks details", func(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
