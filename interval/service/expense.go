@@ -9,6 +9,7 @@ type ExpenseService interface {
 	GetAll() ([]models.Expense, error)
 	Add(details string, amount float64) (*models.Expense, error)
 	Delete(id int) (*models.Expense, error)
+	Update(id int, expense models.Expense) (*models.Expense, error)
 }
 
 type expenseService struct {
@@ -38,4 +39,8 @@ func (e *expenseService) Add(details string, amount float64) (*models.Expense, e
 
 func (e *expenseService) Delete(id int) (*models.Expense, error) {
 	return e.repository.Delete(id)
+}
+
+func (e *expenseService) Update(id int, expense models.Expense) (*models.Expense, error) {
+	return e.repository.Update(id, expense)
 }
