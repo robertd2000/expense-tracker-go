@@ -22,8 +22,8 @@ func CLI(expenseService service.ExpenseService) {
 		commands.Add(args)
 	// case "update":
 	// 	commands.Update(args)
-	// case "delete":
-	// 	commands.Delete(args)
+	case "delete":
+		commands.Delete(args)
 	// case "list":
 	// 	commands.List(args)
 	// case "summary":
