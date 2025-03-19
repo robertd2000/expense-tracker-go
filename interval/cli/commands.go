@@ -26,7 +26,6 @@ func (c *Commands) List() {
 	}
 	fmt.Printf("# ID  Date       Description  Amount\n")
 
-	// Выводим данные
 	for _, record := range records {
 		fmt.Printf("# %-3d %-10s %-12s $%.2f\n",
 			record.ID,
