@@ -295,6 +295,48 @@ func TestSummary(t *testing.T) {
 
 		checkData(t, summary, want)
 	})
+		
+	t.Run("get summary of 9 tasks from current month", func(t *testing.T) {
+		utils.Delete("test.json")
+			
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
+
+		addMultipleExpenses(expenseService, 10)
+		expenseService.Delete(5)
+		month := utils.GetCurrentMonth()
+
+		summary, err := expenseService.GetSummary(month)
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := 5000.0
+
+		checkData(t, summary, want)
+	})
+			
+	t.Run("get summary of 9 tasks from next month", func(t *testing.T) {
+		utils.Delete("test.json")
+			
+		expenseRepository := repository.NewRepository("test.json")
+		expenseService := NewExpenseService(expenseRepository)
+
+		addMultipleExpenses(expenseService, 10)
+		expenseService.Delete(5)
+		month := utils.GetCurrentMonth() + 1
+
+		summary, err := expenseService.GetSummary(month)
+		if err != nil {
+			t.Errorf(err.Error())
+			t.Errorf("got nil")
+		}
+
+		want := 0.0
+
+		checkData(t, summary, want)
+	})
 }
 
 func getExpenses(expenseService ExpenseService, t *testing.T)  []models.Expense {

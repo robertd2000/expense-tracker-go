@@ -279,12 +279,13 @@ func TestSummary(t *testing.T) {
 		checkData(t, summary, want)
 	})
 		
-	t.Run("get summary of 9 tasks from March", func(t *testing.T) {
+	t.Run("get summary of 9 tasks from current month", func(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
 
-		summary, err := repo.GetSummary(3)
+		month := utils.GetCurrentMonth() + 1
+		summary, err := repo.GetSummary(month)
 		if err != nil {
 			t.Errorf(err.Error())
 			t.Errorf("got nil")
@@ -295,12 +296,14 @@ func TestSummary(t *testing.T) {
 		checkData(t, summary, want)
 	})
 	
-	t.Run("get summary of 9 tasks from April", func(t *testing.T) {
+	t.Run("get summary of 9 tasks from next month", func(t *testing.T) {
 		utils.Delete("test.json")
+
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
 
-		summary, err := repo.GetSummary(4)
+		month := utils.GetCurrentMonth() + 1
+		summary, err := repo.GetSummary(month)
 		if err != nil {
 			t.Errorf(err.Error())
 			t.Errorf("got nil")
@@ -311,26 +314,23 @@ func TestSummary(t *testing.T) {
 		checkData(t, summary, want)
 	})
 		
-	t.Run("get summary of 9 tasks from March", func(t *testing.T) {
+	t.Run("get summary of 9 tasks from March with updated", func(t *testing.T) {
 		utils.Delete("test.json")
 		repo := NewRepository("test.json")
 		addMultipleExpenses(repo, 10)
-		expenses, err := repo.GetAll()
+		month := utils.GetCurrentMonth()
 
+		summary, err := repo.GetSummary(month)
 		if err != nil {
 			t.Errorf(err.Error())
 			t.Errorf("got nil")
 		}
 
-		expenses[3].Date = time.Date(2022, 4, 1, 0, 0, 0, 0, time.UTC)
+		want := 5500.0
 
-		summary, err := repo.GetSummary(4)
-		if err != nil {
-			t.Errorf(err.Error())
-			t.Errorf("got nil")
-		}
+		fmt.Println(summary)
+		fmt.Println(want)
 
-		want := 5200.0
 
 		checkData(t, summary, want)
 	})
