@@ -117,7 +117,7 @@ func (c *Commands) Delete(args []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Task with ID %s deleted\n", *id)
+	fmt.Printf("Expense deleted successfully (ID: %d)\n", i)
 }
 
 func (c *Commands) Summary(args []string) {
