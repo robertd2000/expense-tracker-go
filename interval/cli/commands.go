@@ -50,12 +50,12 @@ func (c *Commands) Add(args []string) {
 		return
 	}
 
-	_, err := c.expenseService.Add(*description, float64(*amount))
+	expense, err := c.expenseService.Add(*description, float64(*amount))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Task with description %s created\n", *description)
+	fmt.Printf("Expense added successfully (ID: %d)\n", expense.ID)
 }
 
 func (c *Commands) Update(args []string) {
