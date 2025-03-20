@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/robertd2000/expense-tracker/interval/models"
 	"github.com/robertd2000/expense-tracker/interval/service"
 	"github.com/robertd2000/expense-tracker/interval/utils"
 )
@@ -55,6 +56,43 @@ func (c *Commands) Add(args []string) {
 	}
 
 	fmt.Printf("Task with description %s created\n", *description)
+}
+
+func (c *Commands) Update(args []string) {
+	addCmd := flag.NewFlagSet("update", flag.ExitOnError)
+	id := addCmd.String("id", "", "ID of the item")
+	description := addCmd.String("description", "", "Description of the item (e.g., 'Lunch')")
+	amount := addCmd.Int("amount", 0, "Amount of the item (e.g., 20)")
+
+	addCmd.Parse(os.Args[2:])
+
+	var expense models.Expense
+
+	if *description != "" {
+		expense.Details = *description
+	}
+
+	if *amount != 0 {
+		expense.Amount = float64(*amount)
+	}
+
+	if *id == "" {
+		fmt.Println("Error: Both --description and --amount are required.")
+		addCmd.Usage()
+		return
+	}
+
+	i, err := strconv.Atoi(*id)
+    if err != nil {
+		log.Fatal(err)
+    }
+
+	_, err = c.expenseService.Update(i, expense)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Task with ID %s deleted\n", *id)
 }
 
 func (c *Commands) Delete(args []string) {
