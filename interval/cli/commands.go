@@ -92,7 +92,7 @@ func (c *Commands) Update(args []string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Task with ID %s updated\n", *id)
+	fmt.Printf("Expense updated successfully (ID: %d)\n", i)
 }
 
 func (c *Commands) Delete(args []string) {
