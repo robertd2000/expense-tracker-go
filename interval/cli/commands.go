@@ -132,7 +132,7 @@ func (c *Commands) Summary(args []string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Total amount: %f\n", summary)
+		fmt.Printf("Total expenses: $%.2f\n", summary)
 		return
 	}
 
@@ -148,5 +148,5 @@ func (c *Commands) Summary(args []string) {
 
 	monthName := utils.GetCurrentMonthName()
 
-	fmt.Printf("Total amount for %s: %f\n",monthName, summary)
+	fmt.Printf("Total expenses for %s: $%.2f\n",monthName, summary)
 }
